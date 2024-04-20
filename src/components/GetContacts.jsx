@@ -1,10 +1,20 @@
 import { Button } from "antd";
 import { useState } from "react";
-import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import {DeleteOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import { reqContacts } from "../scripts/reqContacts";
 
-export const GetContacts = () => {
+export const GetContacts = (props) => {
+
+    const {
+        setContactCards
+    } = props
+
   const [contacts, setContacts] = useState(10);
+
+    function onHandleClearContacts() {
+        setContactCards([]);
+        setContacts(10);
+    }
 
   return (
     <div
@@ -15,9 +25,10 @@ export const GetContacts = () => {
         alignItems: "center",
       }}
     >
-      <Button onClick={() => reqContacts(contacts)}>Get 10 contacts</Button>
-      <Button size="small" icon={<PlusOutlined />} />
-      <Button size="small" icon={<MinusOutlined />} />
+      <Button onClick={() => reqContacts(contacts).then((res) => setContactCards(res.results ? res.results : []))}>Get {contacts} contacts</Button>
+      <Button onClick={() => setContacts(contacts === 100 ? 100 : contacts + 10)} size="small" icon={<PlusOutlined />} />
+      <Button onClick={() => setContacts(contacts === 10 ? 10 : contacts - 10)} size="small" icon={<MinusOutlined />} />
+      <Button onClick={onHandleClearContacts} size="small" icon={<DeleteOutlined /> } />
     </div>
   );
 };
